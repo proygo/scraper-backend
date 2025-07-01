@@ -1,30 +1,26 @@
 const express = require('express');
-const scrapeTournament = require('./scraper');
+const scrapeBracket = require('./scraper');
+const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.post('/scrape', async (req, res) => {
-  const { tournament } = req.body;
-  if (!tournament) {
-    return res.status(400).json({ error: "Missing tournament name" });
-  }
+  const { tournamentUrl, tournamentName } = req.body;
 
   try {
-    const fileName = await scrapeTournament(tournament);
-    const filePath = path.join(__dirname, fileName);
-    res.download(filePath, fileName, err => {
-      if (!err) {
-        fs.unlinkSync(filePath); // delete file after sending
-      }
-    });
+    const file = await scrapeBracket(tournamentUrl, tournamentName);
+    const filePath = path.resolve(__dirname, file);
+    res.download(filePath);
   } catch (err) {
-    console.error("Scraper failed:", err);
-    res.status(500).json({ error: "Scraper failed" });
+    console.error('❌ Scraper failed:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`🚀 Scraper API running on port ${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Backend listening at http://localhost:${PORT}`);
+});
