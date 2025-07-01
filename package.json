@@ -1,0 +1,19 @@
+{
+  "name": "scraper-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+}
+
+  ,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "puppeteer": "^24.11.2",
+    "xlsx": "^0.18.5"
+  }
+}
